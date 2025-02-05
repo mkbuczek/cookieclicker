@@ -1,0 +1,94 @@
+body{
+    user-select: none;
+    font-family: 'kavoon';
+    display: flex;
+    background-color: black;
+    color: white;
+    margin: 0px;
+}
+#cookieContainer{
+    border-right: solid 15px brown;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(29, 25, 118);
+    height: 100vh;
+    width: 30vw;
+}
+#buildContainer{
+    background-color: rgb(91, 54, 54);
+    height: 100vh;
+    width: 40vw;
+}
+#storeContainer{
+    border-left: solid 15px brown;
+    background-color: rgb(62, 62, 62);
+    height: 100vh;
+    width: 30vw;
+}
+#storeHeader{
+    border-bottom: solid 15px brown;
+    text-align: center;
+    font-size: 1.75em;
+}
+#cookieText{
+    position: absolute;
+    top: 0;
+    margin-top: 80px;
+    text-align: center;
+    width: 100%;
+}
+#cookieText *{
+    background-color: hsla(0, 0%, 0%, 0.39);
+}
+#cookieCount{
+    font-size: 1.5em;
+}
+#header{
+    border-bottom: solid 15px brown;
+    background-color: black;
+    height: 15vh;
+    width: 100%;
+    text-align: center;
+}
+#cookie{
+    max-width: 80%;
+    padding: 15px;
+    transition: filter 0.1s ease;
+    filter: brightness(100%)
+}
+#cookie:active{
+    filter: brightness(80%);
+    max-width: 78%;
+}
+#milk{
+    position: absolute;
+    bottom: 0;
+    background-color: hsla(0, 0%, 100%, 0.704);
+    width: 100%;
+    height: 25%;
+}
+#bakeryName{
+    margin-bottom: 15px;
+}
+#upgradeStore{
+    border-bottom: solid 15px brown;
+    height: 10vh;
+    text-align: center;
+}
+#buildingStore{
+    font-size: 1.5em;
+}
+.building{
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    border-bottom: solid 5px black;
+    background-color: gray;
+    height: 50px;
+}
+.building:hover{
+    background-color: rgb(111, 111, 111);
+}
