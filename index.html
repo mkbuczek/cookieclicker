@@ -22,15 +22,21 @@
     </div>
 
     <div id="buildContainer">
-        <div id="header">Cookie Clicker</div>
+        <div id="header">Cookie Clicker
+            <div id="resetBtn" onclick="reset()">Reset</div>
+        </div>
     </div>
 
     <div id="storeContainer">
         <div id="storeHeader">Store</div>
-        <div id="upgradeStore"></div>
+        <div id="upgradeStore">
+            <div id="upg1" class="upgrade" onclick="buyUpgrade(1)">100</div>
+            <div id="upg2" class="upgrade" onclick="buyUpgrade(2)">500</div>
+            <div id="upg3" class="upgrade" onclick="buyUpgrade(3)">1000</div>
+        </div>
         <div id="buildingStore">
 
-            <div id="cursor" class="building" onclick="buyBuilding('cursor', 15, 'cursorCount')">
+            <div id="cursor" class="building" onclick="buyBuilding('cursor')">
                 <img id="cursorImg" class="buildingImg" src="assets/cursor.png">
                 <div id="cursorText">
                     <div id="cursorName" class="buildingName">Cursor</div>
@@ -39,7 +45,7 @@
                 <div id="cursorCount" class="buildingCount">0</div>
             </div>
 
-            <div id="grandma" class="building" onclick="buyBuilding('grandma', 100, 'grandmaCount')">
+            <div id="grandma" class="building" onclick="buyBuilding('grandma')">
                 <img id="grandmaImg" class="buildingImg" src="assets/grandma.png">
                 <div id="grandmaText">
                     <div id="grandmaName" class="buildingName">Grandma</div>
@@ -48,7 +54,7 @@
                 <div id="grandmaCount" class="buildingCount">0</div>
             </div>
 
-            <div id="farm" class="building" onclick="buyBuilding('farm', 1100, 'farmCount')">
+            <div id="farm" class="building" onclick="buyBuilding('farm')">
                 <img id="farmImg" class="buildingImg" src="assets/farm.png">
                 <div id="farmText">
                     <div id="farmName" class="buildingName">Farm</div>
