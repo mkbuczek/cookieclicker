@@ -1,42 +1,56 @@
 body{
     user-select: none;
     font-family: 'kavoon';
+    text-shadow: 2px 2px 5px black;
     display: flex;
+    justify-content: flex-start;
+    width: 100vw;
+    align-items: stretch;
     background-color: black;
     color: white;
     margin: 0px;
 }
 #cookieContainer{
-    border-right: solid 15px brown;
+    background-image: url('assets/wallpaper.png');
+    border-right: solid 16px transparent;
+    border-image: url('assets/woodbordervertical.png') 16 round;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgb(29, 25, 118);
     height: 100vh;
-    width: 30vw;
+    width: 32vw;
+    flex-grow: 1;
+    min-width: 250px;
+    overflow: hidden;
 }
 #buildContainer{
-    background-color: rgb(91, 54, 54);
+    background-image: url('assets/wallpaper.png');
     height: 100vh;
-    width: 40vw;
+    width: 42vw;
+    min-width: 200px;
+    flex-grow: 1;
 }
 #storeContainer{
-    border-left: solid 15px brown;
-    background-color: rgb(62, 62, 62);
+    background-image: url('assets/wallpaperdim.png');
+    border-left: solid 16px transparent;
+    border-image: url('assets/woodbordervertical.png') 16 round;
     height: 100vh;
-    width: 30vw;
+    width: 300px;
+    min-width: 300px;
+    flex-shrink: 0;
 }
 #storeHeader{
-    border-bottom: solid 15px brown;
+    border-bottom: solid 16px transparent;
+    border-image: url('assets/woodborderhorizontal.png') 16 round;
     text-align: center;
-    font-size: 1.75em;
+    font-size: 2em;
 }
 #cookieText{
     position: absolute;
     top: 0;
-    margin-top: 80px;
+    margin-top: 100px;
     text-align: center;
     width: 100%;
 }
@@ -44,51 +58,98 @@ body{
     background-color: hsla(0, 0%, 0%, 0.39);
 }
 #cookieCount{
-    font-size: 1.5em;
+    font-size: 1.75em;
 }
 #header{
-    border-bottom: solid 15px brown;
-    background-color: black;
-    height: 15vh;
+    background-image: url('assets/wallpaper.png');
+    border-bottom: solid 16px transparent;
+    border-image: url('assets/woodborderhorizontal.png') 16 round;
+    height: 100px;
     width: 100%;
     text-align: center;
 }
 #cookie{
-    max-width: 80%;
+    position: absolute;
+    top: 30%;
+    width: 255px;
     padding: 15px;
-    transition: filter 0.1s ease;
+    transition: 0.1s ease;
     filter: brightness(100%)
 }
+#cookie:hover{
+    transition: 0.3s ease;
+    transform: scale(1.1);
+}
 #cookie:active{
-    filter: brightness(80%);
-    max-width: 78%;
+    transition: 0.2s ease;
+    transform: scale(0.95);
+    filter: brightness(60%);
+}
+@keyframes rotateShine {
+    0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+    100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+}
+#shine{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    width: 500px;
+    height: auto;
+    opacity: 0.5;
+    animation: rotateShine 15s linear infinite;
 }
 #milk{
     position: absolute;
     bottom: 0;
-    background-color: hsla(0, 0%, 100%, 0.704);
+    background-color: hsla(0, 0%, 100%, 0.45);
     width: 100%;
     height: 25%;
 }
 #bakeryName{
+    font-size: 1.5em;
     margin-bottom: 15px;
 }
 #upgradeStore{
-    border-bottom: solid 15px brown;
-    height: 10vh;
+    border-bottom: solid 16px transparent;
+    border-image: url('assets/woodborderhorizontal.png') 16 round;
+    height: 65px;
     text-align: center;
 }
 #buildingStore{
     font-size: 1.5em;
 }
+#cursor{
+    border-top: solid 6px hsl(0, 0%, 80%);
+}
 .building{
     display: flex;
+    justify-content: flex-start;
     align-items: center;
-    padding-left: 15px;
-    border-bottom: solid 5px black;
-    background-color: gray;
-    height: 50px;
+    padding-left: 0;
+    border-bottom: solid 6px hsl(0, 0%, 60%);
+    border-left: solid 6px hsl(0, 0%, 85%);
+    background-color: hsl(0, 0%, 70%);
+    height: 52px;
 }
 .building:hover{
-    background-color: rgb(111, 111, 111);
+    background-color: hsl(0, 0%, 60%);
+}
+.buildingImg{
+    height: 125%;
+}
+.buildingName{
+    font-size: 1.2em;
+    align-self: flex-start;
+}
+.buildingPrice{
+    font-size: 0.7em;
+    color: hsl(120, 100%, 50%);
+    padding-left: 15px;
+    margin-top: -5px;
+}
+.buildingCount{
+    font-size: 2em;
+    color: rgb(134, 134, 134);
+    margin-left: auto;
+    padding-right: 15px;
 }

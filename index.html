@@ -16,20 +16,47 @@
             <div id="cps">per second: 0</div>
         </div>
 
-        <img id="cookie" src="cookie.png">
+        <img id="shine" src="assets/shine.png">
+        <img id="cookie" src="assets/cookie.png">
         <div id="milk"></div>
     </div>
 
     <div id="buildContainer">
-        <div id="header">news</div>
+        <div id="header">Cookie Clicker</div>
     </div>
 
     <div id="storeContainer">
         <div id="storeHeader">Store</div>
-        <div id="upgradeStore">upgrades</div>
+        <div id="upgradeStore"></div>
         <div id="buildingStore">
-            <div id="cursor" class="building">cursor: 0</div>
-            <div id="grandma" class="building">grandma: 0</div>
+
+            <div id="cursor" class="building" onclick="buyBuilding('cursor', 15, 'cursorCount')">
+                <img id="cursorImg" class="buildingImg" src="assets/cursor.png">
+                <div id="cursorText">
+                    <div id="cursorName" class="buildingName">Cursor</div>
+                    <div id="cursorPrice" class="buildingPrice">15</div>
+                </div>
+                <div id="cursorCount" class="buildingCount">0</div>
+            </div>
+
+            <div id="grandma" class="building" onclick="buyBuilding('grandma', 100, 'grandmaCount')">
+                <img id="grandmaImg" class="buildingImg" src="assets/grandma.png">
+                <div id="grandmaText">
+                    <div id="grandmaName" class="buildingName">Grandma</div>
+                    <div id="grandmaPrice" class="buildingPrice">100</div>
+                </div>
+                <div id="grandmaCount" class="buildingCount">0</div>
+            </div>
+
+            <div id="farm" class="building" onclick="buyBuilding('farm', 1100, 'farmCount')">
+                <img id="farmImg" class="buildingImg" src="assets/farm.png">
+                <div id="farmText">
+                    <div id="farmName" class="buildingName">Farm</div>
+                    <div id="farmPrice" class="buildingPrice">1100</div>
+                </div>
+                <div id="farmCount" class="buildingCount">0</div>
+
+            </div>
         </div>
     </div>
 
