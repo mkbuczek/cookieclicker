@@ -3,21 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cookie Clicker</title>
+    <title id="title">0 Cookies - Cookie Clicker</title>
+    <link rel="icon" type="image/png" href="assets/tinycookie.png">
     <link href='https://fonts.googleapis.com/css?family=Kavoon' rel='stylesheet'>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <img id="goldenCookie" src="assets/goldencookie.png" ></div>
     <div id="cookieContainer">
-        
+
+        <div id="gcContainer">
+            <div id="goldenCookieTimer">0</div>
+            <div id="effectTimer">
+                <span id="effectCountdown">0</span>
+                <div id="progressBar" class="progress"></div>
+            </div>
+        </div>
+
         <div id="cookieText">
-            <div id="bakeryName">Mason's Bakery</div>
+            <div id="bakeryName">Magma's Bakery</div>
             <div id="cookieCount">0 Cookies</div>
             <div id="cps">per second: 0</div>
         </div>
 
-        <img id="shine" src="assets/shine.png">
-        <img id="cookie" src="assets/cookie.png">
+        <img id="shine" src="assets/shine.png" draggable="false">
+        <img id="cookie" src="assets/cookie.png" draggable="false">
+        
         <div id="milk"></div>
     </div>
 
@@ -37,7 +48,7 @@
         <div id="buildingStore">
 
             <div id="cursor" class="building" onclick="buyBuilding('cursor')">
-                <img id="cursorImg" class="buildingImg" src="assets/cursor.png">
+                <img id="cursorImg" class="buildingImg" src="assets/cursor.png" draggable="false">
                 <div id="cursorText">
                     <div id="cursorName" class="buildingName">Cursor</div>
                     <div id="cursorPrice" class="buildingPrice">15</div>
@@ -46,7 +57,7 @@
             </div>
 
             <div id="grandma" class="building" onclick="buyBuilding('grandma')">
-                <img id="grandmaImg" class="buildingImg" src="assets/grandma.png">
+                <img id="grandmaImg" class="buildingImg" src="assets/grandma.png" draggable="false">
                 <div id="grandmaText">
                     <div id="grandmaName" class="buildingName">Grandma</div>
                     <div id="grandmaPrice" class="buildingPrice">100</div>
@@ -55,7 +66,7 @@
             </div>
 
             <div id="farm" class="building" onclick="buyBuilding('farm')">
-                <img id="farmImg" class="buildingImg" src="assets/farm.png">
+                <img id="farmImg" class="buildingImg" src="assets/farm.png" draggable="false">
                 <div id="farmText">
                     <div id="farmName" class="buildingName">Farm</div>
                     <div id="farmPrice" class="buildingPrice">1100</div>
@@ -64,7 +75,7 @@
             </div>
 
             <div id="mine" class="building" onclick="buyBuilding('mine')">
-                <img id="mineImg" class="buildingImg" src="assets/mine.png">
+                <img id="mineImg" class="buildingImg" src="assets/mine.png" draggable="false">
                 <div id="mineText">
                     <div id="mineName" class="buildingName">Mine</div>
                     <div id="minePrice" class="buildingPrice">12000</div>
