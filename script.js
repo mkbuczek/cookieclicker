@@ -16,9 +16,12 @@ const buildings = [
 ];
 
 const upgrades = [
-    { id: 1, price: 100, name: "Reinforced index finger", multiplier: 2, purchased: false},
-    { id: 2, price: 500, name: "Carpal tunnel prevention cream", multiplier: 2, purchased: false},
-    { id: 3, price: 1000, name: "Forwards from grandma", multiplier: 2, purchased: false}
+    { id: 1, price: 100, name: "Reinforced index finger", text: "The mouse and cursors are twice as efficient.",
+        building: "cursor", multiplier: 2, purchased: false},
+    { id: 2, price: 500, name: "Carpal tunnel prevention cream", text: "The mouse and cursors are twice as efficient.",
+        building: "cursor", multiplier: 2, purchased: false},
+    { id: 3, price: 1000, name: "Forwards from grandma", text: "Grandmas are twice as efficient.", 
+        building: "grandma", multiplier: 2, purchased: false}
 ];
 
 //CALLS LOAD FUNCTION
@@ -40,7 +43,7 @@ cookie.addEventListener("click", function(event) {
 //CREATES COOKIE CLICK TEXT
 function createCookieClickText(x, y) {
     let text = document.createElement("span");
-    text.textContent = `+${cookiesPerClick * clickMultiplier}`;
+    text.textContent = `+${(cookiesPerClick * clickMultiplier).toLocaleString()}`;
     text.classList.add("cookieClickText");
 
     text.style.left = (x - 10) + "px";
@@ -67,7 +70,7 @@ function saveGame() {
         cookieCount: cookieCount,
         cps: cps,
         cookiesPerClick: cookiesPerClick,
-        buildings: buildings.map(building => ({ id: building.id, count: building.count })),
+        buildings: buildings.map(building => ({ id: building.id, cps: building.cps, count: building.count })),
         upgrades: upgrades.map(upgrades => ({ id: upgrades.id, purchased: upgrades.purchased}))
     };
 
@@ -90,6 +93,7 @@ function loadGame() {
                 let savedBuilding = data.buildings.find(b => b.id === building.id);
                 if (savedBuilding) {
                     building.count = savedBuilding.count;
+                    building.cps = savedBuilding.cps;
                     document.getElementById(building.id + "Count").textContent = building.count;
                 }
             });
@@ -116,8 +120,8 @@ function loadGame() {
 
 //UPDATES COOKIE COUNT TEXT ELEMENT
 function updateCookieCount() {
-    cookieCountText.textContent = `${Math.floor(cookieCount)} Cookies`;
-    title.textContent = `${Math.floor(cookieCount)} Cookies - Cookie Clicker`;
+    cookieCountText.textContent = `${Math.floor(cookieCount).toLocaleString()} Cookies`;
+    title.textContent = `${Math.floor(cookieCount).toLocaleString()} Cookies - Cookie Clicker`;
     updateVisuals();
 }
 
@@ -148,23 +152,12 @@ function buyUpgrade(upgradeId) {
     if (cookieCount >= upgrade.price) {
         cookieCount -= upgrade.price;
         updateCookieCount();
-
         upgrade.purchased = true;
-      
-        switch (upgradeId) {
-            case 1:
-                applyUpgrade("cursor", upgrade.multiplier);
-                cookiesPerClick *= 2;
-                break;
-            case 2:
-                applyUpgrade("cursor", upgrade.multiplier);
-                cookiesPerClick *= 2;
-                break;
-            case 3:
-                applyUpgrade("grandma", upgrade.multiplier);
-                break;
-            default:
-                console.error("Invalid upgrade id: ", upgradeId);
+
+        applyUpgrade(upgrade.building, upgrade.multiplier);
+
+        if(upgrade.building === "cursor") {
+            cookiesPerClick *= 2;
         }
 
         let upgradeDiv = document.getElementById(`upg${upgradeId}`);
@@ -183,6 +176,82 @@ function applyUpgrade(buildingId, multiplier) {
     }
 }
 
+//UPGRADE TOOLTIP LOGIC
+let upgradeTooltip = document.createElement("div");
+
+document.querySelectorAll(".upgrade").forEach(upgrade => {
+    upgrade.addEventListener("mouseenter", function(event) {
+        const upgradeId = parseInt(this.id.replace("upg", ""), 10);
+        const upgradeData = upgrades.find(u => u.id === upgradeId);
+
+        if (upgradeData) {
+            upgradeTooltip.innerHTML = "";
+
+            upgradeTooltip.classList.add("upgradeTooltip");
+            upgradeTooltip.style.display = "flex";
+            upgradeTooltip.style.position = "absolute";
+            upgradeTooltip.style.right = "310px";
+            upgradeTooltip.style.top = "50px";
+
+            let tooltipTop = document.createElement("div");
+            tooltipTop.classList.add("tooltipTop");
+            let tooltipBottom = document.createElement("div");
+            tooltipBottom.classList.add("tooltipBottom");
+
+            let tooltipLeft = document.createElement("div");
+            tooltipLeft.classList.add("tooltipLeft");
+    
+            let tooltipImg = document.createElement("img");
+            tooltipImg.src = "assets/" + upgradeData.building + "upgrade.png";
+            tooltipImg.classList.add("tooltipImg");
+    
+            let tooltipText = document.createElement("div");
+            tooltipText.classList.add("tooltipText");
+            tooltipText.innerHTML = upgradeData.text;
+    
+            tooltipLeft.appendChild(tooltipImg);
+    
+            let tooltipMiddle = document.createElement("div");
+            tooltipMiddle.classList.add("tooltipMiddle");
+    
+            let tooltipName = document.createElement("div");
+            tooltipName.classList.add("tooltipName");
+            tooltipName.innerHTML = upgradeData.name;
+    
+            tooltipMiddle.appendChild(tooltipName);
+
+            let tooltipRight = document.createElement("div");
+            tooltipRight.classList.add("tooltipRight");
+    
+            let tooltipPrice = document.createElement("div");
+            tooltipPrice.classList.add("tooltipPrice");
+            let cookieIcon = document.createElement("img");
+            cookieIcon.src = "assets/tinycookie.png";
+            cookieIcon.style.marginRight = "5px";
+            let priceText = document.createTextNode(upgradeData.price.toLocaleString());
+    
+            tooltipPrice.appendChild(cookieIcon);
+            tooltipPrice.appendChild(priceText);
+            tooltipRight.appendChild(tooltipPrice);
+    
+            tooltipTop.appendChild(tooltipLeft);
+            tooltipTop.appendChild(tooltipMiddle);
+            tooltipTop.appendChild(tooltipRight);
+            tooltipBottom.appendChild(tooltipText);
+
+            upgradeTooltip.appendChild(tooltipTop);
+            upgradeTooltip.appendChild(tooltipBottom);
+        
+            document.body.appendChild(upgradeTooltip);
+        }
+    });
+
+    upgrade.addEventListener("mouseleave", function() {
+        upgradeTooltip.style.display = "none";
+    })
+})
+
+
 //UPDATES CPS TEXT ELEMENT BASED ON BUILDINGS
 function updateCPS() {
     cps = buildings.reduce((total, building) => total + (building.count * building.cps), 0);
@@ -191,7 +260,7 @@ function updateCPS() {
         cps *= 7;
     }
 
-    cpsText.textContent = `per second: ${cps.toFixed(1)}`;
+    cpsText.textContent = `per second: ${cps.toFixed(1).toLocaleString()}`;
 }
 
 //UPDATES ALL VISUALS
@@ -202,7 +271,7 @@ function updateVisuals() {
         let buildingDiv = document.getElementById(building.id);
         let price = Math.floor((building.basePrice) * (1.15 ** building.count));
 
-        priceText.textContent = price;
+        priceText.textContent = price.toLocaleString();
 
         if (cookieCount >= price) {
             priceText.style.color = "lime";
@@ -254,9 +323,45 @@ function reset() {
     });
     updateCPS();
 }
+
+//DEBUG FEATURES: SPAWN GOLDEN COOKIE, INCREASE CPS, COOKIES, ETC
+let debugMode = false
+let debugDiv = document.getElementById("debugDiv");
+
+function debug(num){
+    switch (num) {
+        case 0:
+            debugMode = (!debugMode);
+    
+            if (debugMode) {
+                
+                debugDiv.style.display = "flex";
+            }
+            else{
+                debugDiv.style.display = "none";
+            }
+            break;
+        case 1:
+            cookieCount += 10000;
+            break;
+        
+        case 2:
+            cps += 10000;
+            cpsText.textContent = `per second: ${cps.toFixed(1).toLocaleString()}`;
+            break;
+        
+        case 3:
+            spawnGoldenCookie();
+            break;
+        default:
+            console.error("Invalid debug key: ", num);
+    }
+}
+
 //
 //GOLDEN COOKIE LOGIC
 //
+
 const goldenCookie = document.getElementById("goldenCookie");
 const goldenCookieTimer = document.getElementById("goldenCookieTimer");
 const effectTimer = document.getElementById("effectTimer");
@@ -296,8 +401,8 @@ function spawnGoldenCookie() {
 
     setTimeout(() => {
         goldenCookie.style.display = "none";
-        scheduleGoldenCookie(); //schedule the next golden cookie in interval below
-    }, 15000);
+        scheduleGoldenCookie();
+    }, 15000); //disappears and schedules another golden cookie after this interval
 }
 
 //SCHEDULES WHEN A GOLDEN COOKIE WILL SHOW UP AND SETS THE TIMER
@@ -349,7 +454,7 @@ function activateGoldenCookieEffect(x, y) {
             let cpsGain = ((cps * 900) + 13);
 
             cookieCount += Math.min(bankGain, cpsGain);
-            effectDiv.textContent = `Lucky! +${Math.min(bankGain, cpsGain)} Cookies!`;
+            effectDiv.textContent = `Lucky! +${Math.min(bankGain, cpsGain).toLocaleString()} Cookies!`;
             break;
         case 1: //frenzy!
             duration = 77;
