@@ -1,3 +1,6 @@
+import { upgrades } from "./upgrades.js";
+import { buildings } from "./buildings.js";
+
 const cookieCountText = document.getElementById("cookieCount");
 const cpsText = document.getElementById("cps");
 const cookie = document.getElementById("cookie");
@@ -7,22 +10,6 @@ let cookieCount = 0;
 let cps = 0;
 let cookiesPerClick = 1;
 let clickMultiplier = 1;
-
-const buildings = [
-    { id: "cursor", basePrice: 15, count: 0, cps: 0.1},
-    { id: "grandma", basePrice: 100, count: 0, cps: 1},
-    { id: "farm", basePrice: 1100, count: 0, cps: 8},
-    { id: "mine", basePrice: 12000, count: 0, cps: 47}
-];
-
-const upgrades = [
-    { id: 1, price: 100, name: "Reinforced index finger", text: "The mouse and cursors are twice as efficient.",
-        building: "cursor", multiplier: 2, purchased: false},
-    { id: 2, price: 500, name: "Carpal tunnel prevention cream", text: "The mouse and cursors are twice as efficient.",
-        building: "cursor", multiplier: 2, purchased: false},
-    { id: 3, price: 1000, name: "Forwards from grandma", text: "Grandmas are twice as efficient.", 
-        building: "grandma", multiplier: 2, purchased: false}
-];
 
 //CALLS LOAD FUNCTION
 window.onload = loadGame;
@@ -37,7 +24,7 @@ cookie.addEventListener("click", function(event) {
     }
     cookieCount += cookiesPerClick * clickMultiplier;
     createCookieClickText(event.clientX, event.clientY);
-    updateCookieCount()
+    updateCookieCount();
 });
 
 //CREATES COOKIE CLICK TEXT
@@ -80,6 +67,8 @@ function saveGame() {
 //LOADS GAME DATA
 function loadGame() {
     let saveData = localStorage.getItem("saveData");
+    updateShopVisuals();
+    updateAvailablePurchases();
 
     if (saveData) {
         let data = JSON.parse(saveData);
@@ -91,9 +80,11 @@ function loadGame() {
         if (data.buildings) {
             buildings.forEach(building => {
                 let savedBuilding = data.buildings.find(b => b.id === building.id);
+                let buildingDiv = document.getElementById(building.id);
                 if (savedBuilding) {
                     building.count = savedBuilding.count;
                     building.cps = savedBuilding.cps;
+                    if (!buildingDiv) return;
                     document.getElementById(building.id + "Count").textContent = building.count;
                 }
             });
@@ -122,11 +113,12 @@ function loadGame() {
 function updateCookieCount() {
     cookieCountText.textContent = `${Math.floor(cookieCount).toLocaleString()} Cookies`;
     title.textContent = `${Math.floor(cookieCount).toLocaleString()} Cookies - Cookie Clicker`;
-    updateVisuals();
+    updateShopVisuals();
+    updateAvailablePurchases();
 }
 
 //BUYS RESPECTIVE BUILDING IF ENOUGH COOKIES
-function buyBuilding(buildingId) {
+window.buyBuilding = function(buildingId) {
     let building = buildings.find(b => b.id === buildingId);
     if (!building) return; 
 
@@ -145,7 +137,7 @@ function buyBuilding(buildingId) {
 }
 
 //BUYS RESPECTIVE UPGRADE IF ENOUGH COOKIES
-function buyUpgrade(upgradeId) {
+window.buyUpgrade = function(upgradeId) {
     let upgrade = upgrades.find(u => u.id === upgradeId);
     if (!upgrade || upgrade.purchased) return;
 
@@ -178,11 +170,16 @@ function applyUpgrade(buildingId, multiplier) {
 
 //UPGRADE TOOLTIP LOGIC
 let upgradeTooltip = document.createElement("div");
+let shopContainer = document.getElementById("upgradeStore");
 
-document.querySelectorAll(".upgrade").forEach(upgrade => {
-    upgrade.addEventListener("mouseenter", function(event) {
-        const upgradeId = parseInt(this.id.replace("upg", ""), 10);
+document.getElementById("upgradeStore").addEventListener("mouseenter", function(event) {
+    if (event.target.classList.contains("upgrade")) {
+        const upgradeId = parseInt(event.target.id.replace("upg", ""), 10);
         const upgradeData = upgrades.find(u => u.id === upgradeId);
+
+        if (upgrades.length > 5) {
+            shopContainer.classList.add("expanded");
+        }
 
         if (upgradeData) {
             upgradeTooltip.innerHTML = "";
@@ -207,7 +204,7 @@ document.querySelectorAll(".upgrade").forEach(upgrade => {
     
             let tooltipText = document.createElement("div");
             tooltipText.classList.add("tooltipText");
-            tooltipText.innerHTML = upgradeData.text;
+            tooltipText.textContent = upgradeData.text;
     
             tooltipLeft.appendChild(tooltipImg);
     
@@ -216,7 +213,7 @@ document.querySelectorAll(".upgrade").forEach(upgrade => {
     
             let tooltipName = document.createElement("div");
             tooltipName.classList.add("tooltipName");
-            tooltipName.innerHTML = upgradeData.name;
+            tooltipName.textContent = upgradeData.name;
     
             tooltipMiddle.appendChild(tooltipName);
 
@@ -228,8 +225,17 @@ document.querySelectorAll(".upgrade").forEach(upgrade => {
             let cookieIcon = document.createElement("img");
             cookieIcon.src = "assets/tinycookie.png";
             cookieIcon.style.marginRight = "5px";
-            let priceText = document.createTextNode(upgradeData.price.toLocaleString());
+            
+            let priceText = document.createElement("span");
+            priceText.textContent = upgradeData.price.toLocaleString();
     
+            if (cookieCount >= upgradeData.price) {
+                priceText.style.color = "#60F064";
+            }
+            else {
+                priceText.style.color = "#FF6666";
+            }
+
             tooltipPrice.appendChild(cookieIcon);
             tooltipPrice.appendChild(priceText);
             tooltipRight.appendChild(tooltipPrice);
@@ -244,13 +250,13 @@ document.querySelectorAll(".upgrade").forEach(upgrade => {
         
             document.body.appendChild(upgradeTooltip);
         }
-    });
+    }
+}, true);
 
-    upgrade.addEventListener("mouseleave", function() {
-        upgradeTooltip.style.display = "none";
-    })
-})
-
+document.getElementById("upgradeStore").addEventListener("mouseleave", function() {
+    upgradeTooltip.style.display = "none";
+    shopContainer.classList.remove("expanded");
+});
 
 //UPDATES CPS TEXT ELEMENT BASED ON BUILDINGS
 function updateCPS() {
@@ -260,67 +266,143 @@ function updateCPS() {
         cps *= 7;
     }
 
-    cpsText.textContent = `per second: ${cps.toFixed(1).toLocaleString()}`;
+    cpsText.textContent = `per second: ${cps.toLocaleString()}`;
 }
 
-//UPDATES ALL VISUALS
-function updateVisuals() {
-
+//UPDATES ALL SHOP VISUALS BASED ON THE AFFORDABILITY
+//DIMS OUT PURCHASES THAT ARE TOO EXPENSIVE
+function updateShopVisuals() {
     buildings.forEach(building => {
-        let priceText = document.getElementById(building.id).querySelector(".buildingPrice");
         let buildingDiv = document.getElementById(building.id);
-        let price = Math.floor((building.basePrice) * (1.15 ** building.count));
 
-        priceText.textContent = price.toLocaleString();
+        if (buildingDiv){ //check if the buildingDiv exists in DOM first
+            let priceText = document.getElementById(building.id).querySelector(".buildingPrice");
+            let price = Math.floor((building.basePrice) * (1.15 ** building.count));
+            priceText.textContent = price.toLocaleString();
 
-        if (cookieCount >= price) {
-            priceText.style.color = "lime";
-            buildingDiv.style.opacity = "1";
+            if (cookieCount >= price) {
+                priceText.style.color = "#60F064";
+                buildingDiv.style.filter = "brightness(100%)";
+            }
+            else {
+                priceText.style.color = "#FF6666";
+                buildingDiv.style.filter = "brightness(50%)";
+            }
+        }
+    });
+    upgrades.forEach(upgrade => {
+        let upgradeDiv = document.getElementById(`upg${upgrade.id}`);
+        if (upgradeDiv){ //check if the upgradeDiv exists in DOM first
+            if (cookieCount >= upgrade.price) {
+                upgradeDiv.style.filter = "brightness(100%)";
+            }
+            else {
+                upgradeDiv.style.filter = "brightness(50%)";
+            }
+        }
+    });
+}
+
+//UPDATES WHICH UPGRADES/BUILDINGS ARE AVAILABLE
+//BASED ON IF THE PLAYER HAS UNLOCKED THEM
+
+function updateAvailablePurchases() {
+
+    buildings.forEach( building => {
+        let buildingDiv = document.getElementById(building.id);
+        let buildingStore = document.getElementById("buildingStore");
+
+        if(!buildingDiv) { //if the buildingDiv does not already exist in the DOM, create it
+            buildingDiv = document.createElement("div");
+            buildingDiv.id = `${building.id}`;
+            buildingDiv.classList.add("building");
+            buildingDiv.onclick = () => buyBuilding(building.id);
+
+            let buildingImg = document.createElement("img");
+            buildingImg.id = `${building.id}Img`;
+            buildingImg.classList.add("buildingImg");
+            buildingImg.src = `assets/${building.id}.png`;
+            buildingImg.draggable = false;
+
+            let buildingText = document.createElement("div");
+            buildingText.id = `${building.id}Text`;
+
+            let buildingName = document.createElement("div");
+            buildingName.id = `${building.id}Name`;
+            buildingName.classList.add("buildingName");
+            buildingName.textContent = (building.id.charAt(0).toUpperCase()) + (building.id.slice(1));
+
+            let buildingPrice = document.createElement("div");
+            buildingPrice.id = `${building.id}Price`;
+            buildingPrice.classList.add("buildingPrice");
+
+            buildingText.appendChild(buildingName);
+            buildingText.appendChild(buildingPrice);
+
+            let buildingCount = document.createElement("div");
+            buildingCount.id = `${building.id}Count`;
+            buildingCount.classList.add("buildingCount");
+            buildingCount.textContent = "0";
+
+            buildingDiv.appendChild(buildingImg);
+            buildingDiv.appendChild(buildingText);
+            buildingDiv.appendChild(buildingCount);
+
+            buildingStore.appendChild(buildingDiv);
+        }
+
+        const prereqBuilding = building.displayPrereq ? buildings.find(b => b.id === building.displayPrereq) : null;
+
+        if (prereqBuilding && prereqBuilding.count >= 1 || !prereqBuilding) {
+            buildingDiv.style.display = "flex";
+        } else {
+            buildingDiv.style.display = "none";
+        }
+    })
+
+    upgrades.forEach( upgrade => {
+        let upgradeDiv = document.getElementById(`upg${upgrade.id}`);
+
+        if (!upgradeDiv) { //if the upgradeDiv does not already exist in the DOM, create it
+            upgradeDiv = document.createElement("div");
+            upgradeDiv.id = `upg${upgrade.id}`;
+            upgradeDiv.classList.add("upgrade");
+            upgradeDiv.classList.add(`${upgrade.building}Upgrade`);
+            upgradeDiv.onclick = () => buyUpgrade(upgrade.id);
+            upgradeDiv.style.display = "flex";
+            shopContainer.appendChild(upgradeDiv);
+        }
+
+        const buildingId = upgrade.building;
+        const requiredCount = upgrade.displayPrereq[buildingId] || 0;
+
+        const building = buildings.find(b => b.id === buildingId);
+
+        if (building && building.count >= requiredCount && !upgrade.purchased) {
+            upgradeDiv.style.display = "flex";
         }
         else {
-            priceText.style.color = "red";
-            buildingDiv.style.opacity = "0.5";
+            upgradeDiv.style.display = "none";
         }
     });
 }
 
 //RESETS PROGRESS
-function reset() {
+window.reset = function() {
     cookieCount = 0;
     cps = 0;
     cookiesPerClick = 1;
 
     buildings.forEach(building => {
         building.count = 0;
+        building.cps = building.baseCps;
         document.getElementById(building.id + "Count").textContent = building.count;
-
-        switch (building.id) {
-            case "cursor":
-                building.cps = 0.1;
-                break;
-            case "grandma":
-                building.cps = 1;
-                break;
-            case "farm":
-                building.cps = 8;
-                break;
-            case "mine":
-                building.cps = 47;
-                break;
-            default:
-                console.error("Cannot reset unknown building id: ", building.id);
-        }
     });
 
     upgrades.forEach(upgrade => {
         upgrade.purchased = false;
     });
 
-    let upgradeIcons = document.querySelectorAll('.upgrade');
-    upgradeIcons.forEach(upgrade =>{
-        upgrade.style.display = "flex";
-        
-    });
     updateCPS();
 }
 
@@ -328,7 +410,7 @@ function reset() {
 let debugMode = false
 let debugDiv = document.getElementById("debugDiv");
 
-function debug(num){
+window.debug = function(num){
     switch (num) {
         case 0:
             debugMode = (!debugMode);
@@ -342,12 +424,12 @@ function debug(num){
             }
             break;
         case 1:
-            cookieCount += 10000;
+            cookieCount += 100000000;
             break;
         
         case 2:
-            cps += 10000;
-            cpsText.textContent = `per second: ${cps.toFixed(1).toLocaleString()}`;
+            cps += 100000;
+            cpsText.textContent = `per second: ${cps.toLocaleString()}`;
             break;
         
         case 3:
@@ -361,7 +443,6 @@ function debug(num){
 //
 //GOLDEN COOKIE LOGIC
 //
-
 const goldenCookie = document.getElementById("goldenCookie");
 const goldenCookieTimer = document.getElementById("goldenCookieTimer");
 const effectTimer = document.getElementById("effectTimer");
@@ -371,7 +452,6 @@ let clickFrenzy = false;
 let duration;
 let progressBarWidth;
 let countdown;
-let tickDecrement;
 
 timerProgress.classList.add("progress");
 effectTimer.appendChild(timerProgress);
@@ -407,7 +487,7 @@ function spawnGoldenCookie() {
 
 //SCHEDULES WHEN A GOLDEN COOKIE WILL SHOW UP AND SETS THE TIMER
 function scheduleGoldenCookie() {
-    let randomTime = Math.random() * (120000 - 60000) + 60000; //spawns between 120 - 60 seconds
+    let randomTime = Math.random() * (60000 - 30000) + 30000; //spawns between 30 - 60 seconds
     let countdown = Math.floor(randomTime / 1000);
 
     goldenCookieTimer.textContent = `${countdown}`;
@@ -525,4 +605,3 @@ function activateGoldenCookieEffect(x, y) {
 function updateProgressBar(percentage) {
     timerProgress.style.width = percentage + "%";
 }
-

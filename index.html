@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <img id="goldenCookie" src="assets/goldencookie.png" ></div>
+    <img id="goldenCookie" src="assets/goldencookie.png" draggable="false"></div>
     <div id="cookieContainer">
 
         <div id="gcContainer">
@@ -23,78 +23,39 @@
         </div>
 
         <div id="cookieText">
-            <div id="bakeryName">Magma's Bakery</div>
+            <div id="bakeryName">Magma's bakery</div>
             <div id="cookieCount">0 Cookies</div>
             <div id="cps">per second: 0</div>
         </div>
 
-        <img id="shine" src="assets/shine.png" draggable="false">
-        <img id="cookie" src="assets/cookie.png" draggable="false">
-        
+        <div id="cookieShineContainer">
+            <img id="shine" src="assets/shine.png" draggable="false">
+            <img id="cookie" src="assets/cookie.png" draggable="false">
+        </div>
+
         <div id="milk"></div>
     </div>
 
     <div id="buildContainer">
-        <div id="header">Cookie Clicker
+        <div id="header">Cookie Clicker v3.2
             <div id="buttonContainer">
                 <div id="resetBtn" onclick="reset()">Reset</div>
                 <div id="debugBtn" onclick="debug(0)">Debug</div>
             </div>
         </div>
         <div id="debugDiv" style="display: none;">
-            <div class="debug" onclick="debug(1)">+10,000 Cookies</div>
-            <div class="debug" onclick="debug(2)">+10,000 CPS</div>
+            <div class="debug" onclick="debug(1)">+100,000,000 Cookies</div>
+            <div class="debug" onclick="debug(2)">+100,000 CPS</div>
             <div class="debug" onclick="debug(3)">Spawn Golden Cookie</div>
         </div>
     </div>
 
     <div id="storeContainer">
         <div id="storeHeader">Store</div>
-        <div id="upgradeStore">
-            <div id="upg1" class="upgrade cursorUpgrade" onclick="buyUpgrade(1)"></div>
-            <div id="upg2" class="upgrade cursorUpgrade" onclick="buyUpgrade(2)"></div>
-            <div id="upg3" class="upgrade grandmaUpgrade" onclick="buyUpgrade(3)"></div>
-        </div>
-        <div id="buildingStore">
-
-            <div id="cursor" class="building" onclick="buyBuilding('cursor')">
-                <img id="cursorImg" class="buildingImg" src="assets/cursor.png" draggable="false">
-                <div id="cursorText">
-                    <div id="cursorName" class="buildingName">Cursor</div>
-                    <div id="cursorPrice" class="buildingPrice">15</div>
-                </div>
-                <div id="cursorCount" class="buildingCount">0</div>
-            </div>
-
-            <div id="grandma" class="building" onclick="buyBuilding('grandma')">
-                <img id="grandmaImg" class="buildingImg" src="assets/grandma.png" draggable="false">
-                <div id="grandmaText">
-                    <div id="grandmaName" class="buildingName">Grandma</div>
-                    <div id="grandmaPrice" class="buildingPrice">100</div>
-                </div>
-                <div id="grandmaCount" class="buildingCount">0</div>
-            </div>
-
-            <div id="farm" class="building" onclick="buyBuilding('farm')">
-                <img id="farmImg" class="buildingImg" src="assets/farm.png" draggable="false">
-                <div id="farmText">
-                    <div id="farmName" class="buildingName">Farm</div>
-                    <div id="farmPrice" class="buildingPrice">1100</div>
-                </div>
-                <div id="farmCount" class="buildingCount">0</div>
-            </div>
-
-            <div id="mine" class="building" onclick="buyBuilding('mine')">
-                <img id="mineImg" class="buildingImg" src="assets/mine.png" draggable="false">
-                <div id="mineText">
-                    <div id="mineName" class="buildingName">Mine</div>
-                    <div id="minePrice" class="buildingPrice">12000</div>
-                </div>
-                <div id="mineCount" class="buildingCount">0</div>
-            </div>
-        </div>
+        <div id="upgradeStore"></div>
+        <div id="buildingStore"></div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

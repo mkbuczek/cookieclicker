@@ -4,7 +4,8 @@ body{
     text-shadow: 2px 2px 5px black;
     display: flex;
     justify-content: flex-start;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     align-items: stretch;
     background-color: black;
     color: white;
@@ -93,6 +94,7 @@ body{
     animation: floatUp 10s ease-out forwards;
 }
 #goldenCookieTimer{
+    z-index: 3;
     position: absolute;
     bottom: 0;
     color: goldenrod;
@@ -135,13 +137,11 @@ body{
     align-items: center;
 }
 #cookie{
-    z-index: 1;
-    position: absolute;
-    top: 400px;
+    z-index: 2;
+    position: relative;
     width: 255px;
-    padding: 15px;
     transition: 0.1s ease;
-    filter: brightness(100%)
+    filter: brightness(100%);
 }
 #cookie:hover{
     cursor: pointer;
@@ -152,6 +152,27 @@ body{
     transition: 0.2s ease;
     transform: scale(0.95);
     filter: brightness(60%);
+}
+@keyframes rotateShine {
+    0% { transform: rotate(0deg) scale(1); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+#shine{
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 255px;
+    scale: 2;
+    opacity: 0.5;
+    animation: rotateShine 15s linear infinite;
+}
+#cookieShineContainer{
+    z-index: 0;
+    position: relative;
+    top: -10%;
+    width: 255px;
+    height: 255px;
 }
 .cookieClickText{
     z-index: 2;
@@ -173,19 +194,6 @@ body{
         transform: translateY(-200px);
         opacity: 0;
     }
-}
-@keyframes rotateShine {
-    0% { transform: rotate(0deg) scale(1); }
-    100% { transform: rotate(360deg) scale(1); }
-}
-#shine{
-    z-index: 0;
-    position: absolute;
-    top: 300px;
-    width: 500px;
-    height: auto;
-    opacity: 0.5;
-    animation: rotateShine 15s linear infinite;
 }
 #goldenCookie{
     z-index: 5;
@@ -224,26 +232,30 @@ body{
     z-index: 1;
     opacity: 80%;
     position: absolute;
-    bottom: -200px;
     width: 100%;
-    height: 30%;
+    height: 20%;
     scale: 1.5;
+    bottom: 0;
     background-image: url('assets/milkplain.png');
-    background-position: 0 0;
     background-repeat: repeat-x;
 }
 #bakeryName{
-    font-size: 1.5em;
+    font-size: 1.25em;
     margin-bottom: 15px;
     width: 80%;
+    border-radius: 15px;
 }
 #upgradeStore{
     border-bottom: solid 16px transparent;
     border-image: url('assets/woodborderhorizontal.png') 16 round;
-    min-height: 60px;
+    height: 60px;
     text-align: center;
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    overflow: hidden;
+}
+#upgradeStore.expanded{
+    height: auto;
 }
 #buildingStore{
     font-size: 1.5em;
@@ -315,7 +327,6 @@ body{
     justify-content: center;
     align-items: center;
     padding-right: 5px;
-    color: hsl(120, 100%, 50%);
 }
 .tooltipBottom{
     font-size: 12px;
@@ -342,6 +353,26 @@ body{
 }
 .grandmaUpgrade{
     background-image: url('assets/upgradeframe.png'), url('assets/grandmaupgrade.png');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.farmUpgrade{
+    background-image: url('assets/upgradeframe.png'), url('assets/farmupgrade.png');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.mineUpgrade{
+    background-image: url('assets/upgradeframe.png'), url('assets/mineupgrade.png');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.factoryUpgrade{
+    background-image: url('assets/upgradeframe.png'), url('assets/factoryupgrade.png');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.bankUpgrade{
+    background-image: url('assets/upgradeframe.png'), url('assets/bankupgrade.png');
     background-position: center;
     background-repeat: no-repeat;
 }
